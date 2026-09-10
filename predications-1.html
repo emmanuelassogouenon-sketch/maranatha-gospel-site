@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prédications & Études bibliques — MARANATHA GOSPEL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0F1B2D; --dawn:#E8A94C; --dawn-soft:#F2C97D;
+    --parchment:#F6F1E7; --ink:#1C1B18; --ember:#8B3A2B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--parchment); color:var(--ink); font-family:'Work Sans', sans-serif; line-height:1.6;}
+  h1,h2{font-family:'Fraunces', serif; font-weight:500; margin:0;}
+  .wrap{max-width:680px; margin:0 auto; padding:0 24px;}
+
+  .navbar{background:var(--night); border-bottom:1px solid rgba(246,241,231,0.12);}
+  .navbar .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 24px;}
+  .nav-brand{font-size:14px; color:var(--parchment); display:flex; align-items:center; gap:8px;}
+  .nav-brand .dot{width:6px;height:6px;border-radius:50%;background:var(--dawn);}
+  .back-link{font-size:14px; color:var(--dawn-soft); text-decoration:none;}
+
+  .top{background:var(--night); color:var(--parchment); padding:40px 0 46px;}
+  .top .eyebrow{color:var(--dawn-soft); font-size:14px; margin-bottom:12px;}
+  .top h1{font-size:clamp(26px,6vw,34px);}
+
+  .tabs{display:flex; gap:8px; padding:22px 0 0; border-bottom:1px solid #E4DCC9;}
+  .tab{
+    padding:10px 4px 14px; font-size:15px; color:#8a8778; cursor:pointer; border-bottom:2px solid transparent; margin-right:20px; background:none; border-top:none; border-left:none; border-right:none; font-family:'Work Sans', sans-serif;
+  }
+  .tab.active{color:var(--ink); border-bottom-color:var(--ember); font-weight:500;}
+
+  .panel{display:none; padding:30px 0 50px;}
+  .panel.active{display:block;}
+
+  .empty-state{padding:60px 24px; text-align:center; color:#8a8778;}
+  .empty-state p{font-size:15px; max-width:44ch; margin:0 auto;}
+
+  .content-date{font-size:13px; color:var(--ember); margin-bottom:16px;}
+  .content-verse{
+    padding:16px 20px; border-left:2px solid var(--dawn); background:#FFFDF8; margin-bottom:22px;
+  }
+  .content-verse p{font-family:'Fraunces', serif; font-style:italic; font-size:16px; margin:0 0 6px;}
+  .content-verse span{font-size:13px; color:#8a8778;}
+
+  .predication-text{font-size:16px; white-space:pre-line;}
+
+  .etude-title{font-size:20px; margin-bottom:16px;}
+  .etude-points{padding-left:20px; margin:0 0 18px;}
+  .etude-points li{font-size:15px; margin-bottom:10px;}
+  .etude-application{
+    padding:16px 20px; background:#FFFDF8; border:1px solid #E4DCC9; font-size:15px;
+  }
+  .etude-application strong{color:var(--ember);}
+
+  footer{padding:28px 0 40px; font-size:13px; color:#8a8778; text-align:center;}
+</style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="wrap">
+      <div class="nav-brand"><span class="dot"></span>MARANATHA GOSPEL</div>
+      <a class="back-link" href="index.html">← Accueil</a>
+    </div>
+  </nav>
+
+  <header class="top">
+    <div class="wrap">
+      <p class="eyebrow">Grandir dans la foi</p>
+      <h1>Prédications & Études bibliques</h1>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab active" data-tab="predications">Prédication</button>
+      <button class="tab" data-tab="etudes">Étude biblique</button>
+    </div>
+
+    <div class="panel active" id="panel-predications">
+      <div id="predication-content"><p class="empty-state">Chargement...</p></div>
+    </div>
+
+    <div class="panel" id="panel-etudes">
+      <div id="etude-content"><p class="empty-state">Chargement...</p></div>
+    </div>
+  </div>
+
+  <footer>MARANATHA GOSPEL — depuis 2024</footer>
+
+<script>
+  const SERVER_URL = "https://maranatha-gospel-server.onrender.com";
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  fetch(`${SERVER_URL}/api/today`)
+    .then(r => r.json())
+    .then(data => {
+      const predicationEl = document.getElementById("predication-content");
+      const etudeEl = document.getElementById("etude-content");
+
+      if (data.error || !data.predication) {
+        const msg = '<p class="empty-state">Le premier contenu du jour arrive bientôt.</p>';
+        predicationEl.innerHTML = msg;
+        etudeEl.innerHTML = msg;
+        return;
+      }
+
+      predicationEl.innerHTML = `
+        <p class="content-date">${data.moment === "matin" ? "Prédication du matin" : "Prédication du soir"}</p>
+        <div class="content-verse">
+          <p>« ${data.verset} »</p>
+          <span>${data.reference}</span>
+        </div>
+        <div class="predication-text">${data.predication}</div>
+      `;
+
+      const etude = data.etude || {};
+      etudeEl.innerHTML = `
+        <p class="content-date">${data.moment === "matin" ? "Étude du matin" : "Étude du soir"}</p>
+        <div class="content-verse">
+          <p>« ${data.verset} »</p>
+          <span>${data.reference}</span>
+        </div>
+        <h2 class="etude-title">${etude.titre || ""}</h2>
+        <ul class="etude-points">
+          ${(etude.points || []).map(p => `<li>${p}</li>`).join("")}
+        </ul>
+        <div class="etude-application"><strong>Application :</strong> ${etude.application || ""}</div>
+      `;
+    })
+    .catch(() => {
+      const msg = '<p class="empty-state">Le premier contenu du jour arrive bientôt.</p>';
+      document.getElementById("predication-content").innerHTML = msg;
+      document.getElementById("etude-content").innerHTML = msg;
+    });
+</script>
+</body>
+</html>

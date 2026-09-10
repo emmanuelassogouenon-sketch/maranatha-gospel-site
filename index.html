@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MARANATHA GOSPEL — Viens, Seigneur</title>
+<meta name="description" content="MARANATHA GOSPEL — L'Évangile, une méditation chaque matin et chaque soir, et un accompagnement pour grandir dans la foi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<style>
+  :root{
+    --night:#0F1B2D;
+    --night-2:#152640;
+    --dawn:#E8A94C;
+    --dawn-soft:#F2C97D;
+    --parchment:#F6F1E7;
+    --ink:#1C1B18;
+    --ember:#8B3A2B;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.55;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    margin:0;
+  }
+  a{color:inherit;}
+  .wrap{max-width:720px; margin:0 auto; padding:0 24px;}
+
+  /* NAV */
+  .navbar{
+    position:sticky; top:0; z-index:50;
+    background: var(--night);
+    border-bottom:1px solid rgba(246,241,231,0.12);
+  }
+  .navbar .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:14px; padding-bottom:14px;
+  }
+  .nav-brand{
+    font-size:14px; letter-spacing:0.06em; color: var(--parchment);
+    display:flex; align-items:center; gap:8px;
+  }
+  .nav-brand .dot{width:6px;height:6px;border-radius:50%;background:var(--dawn);}
+  .menu-btn{
+    background:none; border:none; padding:6px; cursor:pointer;
+    display:flex; flex-direction:column; gap:5px;
+  }
+  .menu-btn span{display:block; width:22px; height:2px; background:var(--parchment);}
+  .nav-menu{
+    display:none; flex-direction:column;
+    background: var(--night-2);
+    border-bottom:1px solid rgba(246,241,231,0.12);
+  }
+  .nav-menu.open{display:flex;}
+  .nav-menu a{
+    padding:16px 24px; text-decoration:none; color: var(--parchment);
+    font-size:15px; border-top:1px solid rgba(246,241,231,0.08);
+  }
+  .nav-menu a.donate{color: var(--dawn-soft);}
+
+  /* HERO */
+  .hero{
+    background: linear-gradient(180deg, var(--night) 0%, var(--night-2) 55%, var(--dawn) 130%);
+    color: var(--parchment);
+    padding: 56px 0 90px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; left:50%; bottom:-140px;
+    width:520px; height:520px;
+    background: radial-gradient(circle, rgba(232,169,76,0.55) 0%, rgba(232,169,76,0) 70%);
+    transform:translateX(-50%);
+    pointer-events:none;
+  }
+  .hero h1{
+    font-size: clamp(34px, 8vw, 52px);
+    line-height:1.08;
+    max-width: 11ch;
+  }
+  .hero .lede{
+    margin-top:22px; font-size:18px; max-width: 42ch;
+    color: rgba(246,241,231,0.88);
+  }
+  .verse-card{
+    position:relative; margin-top:44px; padding:22px 24px;
+    border-left: 2px solid var(--dawn);
+    background: rgba(246,241,231,0.06);
+  }
+  .verse-card p{
+    font-family:'Fraunces', serif; font-style:italic; font-size:19px;
+    margin:0 0 8px; color: var(--parchment);
+  }
+  .verse-card span{font-size:14px; color: var(--dawn-soft);}
+  .cta-row{margin-top:40px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block; padding:13px 24px; font-size:15px; font-weight:500;
+    text-decoration:none; border-radius:2px;
+  }
+  .btn-primary{background: var(--dawn); color: var(--night);}
+  .btn-ghost{border:1px solid rgba(246,241,231,0.4); color: var(--parchment);}
+
+  /* VERSET DU JOUR */
+  .today{background: var(--parchment); border-bottom:1px solid #E4DCC9;}
+  .today-card{padding:28px 26px; background:#FFFDF8; border:1px solid #E4DCC9;}
+  .today-card .moment{font-size:13px; color:var(--ember); margin-bottom:10px;}
+  .today-card .verse{font-family:'Fraunces', serif; font-style:italic; font-size:20px; margin:0 0 6px;}
+  .today-card .ref{font-size:14px; color:#8a8778; margin-bottom:18px; display:block;}
+  .today-card h4{font-size:13px; color:#8a8778; margin:18px 0 6px; font-weight:600;}
+  .today-card p{margin:0; font-size:16px;}
+  .notif-btn{
+    margin-top:22px; display:inline-flex; align-items:center; gap:8px;
+    padding:12px 20px; background:var(--night); color:var(--parchment);
+    border:none; border-radius:2px; font-size:15px; font-family:'Work Sans', sans-serif; cursor:pointer;
+  }
+  .notif-btn:disabled{opacity:0.6; cursor:default;}
+  .today-empty{color:#8a8778; font-size:15px;}
+
+  /* SECTIONS GÉNÉRALES */
+  section{padding:64px 0;}
+  .eyebrow{font-size:14px; color: var(--ember); margin-bottom:14px;}
+  .section-title{font-size: clamp(24px, 5vw, 30px); max-width: 16ch;}
+  .section-title + p{margin-top:16px; font-size:17px; max-width:56ch; color:#4a4842;}
+
+  .gospel p{font-size:17px; max-width: 62ch; margin: 18px 0 0;}
+
+  .feature{
+    display:flex; flex-direction:column; gap:10px; padding:28px 0;
+    border-top:1px solid #E4DCC9;
+  }
+  .feature:last-child{border-bottom:1px solid #E4DCC9;}
+  .feature h3{font-size:20px;}
+  .feature p{font-size:16px; color:#4a4842; margin:0; max-width:58ch;}
+  .feature .tag{font-size:13px; color:var(--ember);}
+
+  /* DONS */
+  .donate-section{background:#FFFDF8; border-bottom:1px solid #E4DCC9;}
+  .donate-box{margin-top:24px; padding:26px; background: var(--parchment); border:1px solid #E4DCC9;}
+  .donate-box p{margin:0 0 18px; font-size:16px; color:#4a4842;}
+  .donate-btn{
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px;
+    background: var(--ember); color: var(--parchment); text-decoration:none;
+    font-size:15px; border-radius:2px;
+  }
+
+  /* CLOTURE */
+  .closing{background: var(--night); color: var(--parchment); text-align:left;}
+  .closing h2{font-size: clamp(24px,5vw,30px); max-width:18ch; color:var(--parchment);}
+  .closing p{margin-top:14px; color: rgba(246,241,231,0.8); max-width:52ch;}
+  .contact-line{margin-top:28px; font-size:16px;}
+  .contact-line a{color: var(--dawn-soft); text-decoration:underline;}
+
+  footer{padding:28px 0 40px; font-size:13px; color:#8a8778;}
+
+  @media (max-width:480px){
+    .wrap{padding:0 20px;}
+    .hero{padding:44px 0 70px;}
+  }
+</style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="wrap">
+      <div class="nav-brand"><span class="dot"></span>MARANATHA GOSPEL</div>
+      <button class="menu-btn" id="menu-btn" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-menu" id="nav-menu">
+      <a href="#verset-du-jour">Verset du jour</a>
+      <a href="evangile.html">L'Évangile</a>
+      <a href="predications.html">Prédications & Études</a>
+      <a href="questions.html">Pose ta question</a>
+      <a href="jeux.html">Jeux bibliques</a>
+      <a href="#dons" class="donate">Faire un don</a>
+      <a href="#rejoindre">Nous rejoindre</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <h1>Viens, Seigneur. Et en attendant — viens, toi aussi.</h1>
+      <p class="lede">Un lieu simple pour découvrir l'Évangile, marcher chaque jour avec Dieu, et grandir dans la foi — où que tu en sois.</p>
+
+      <div class="verse-card">
+        <p>« Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle. »</p>
+        <span>Jean 3.16</span>
+      </div>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" href="evangile.html">Découvrir l'Évangile</a>
+        <a class="btn btn-ghost" href="#rejoindre">Nous rejoindre</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="today" id="verset-du-jour">
+    <div class="wrap">
+      <p class="eyebrow">Aujourd'hui</p>
+      <h2 class="section-title">Ton verset, ta méditation, ta prière</h2>
+      <div id="today-content" style="margin-top:24px;">
+        <p class="today-empty">Chargement...</p>
+      </div>
+      <button class="notif-btn" id="notif-btn">Activer les notifications du matin et du soir</button>
+    </div>
+  </section>
+
+  <section class="gospel" id="evangile">
+    <div class="wrap">
+      <p class="eyebrow">L'essentiel</p>
+      <h2 class="section-title">Ce que dit l'Évangile</h2>
+      <p>Dieu t'a créé pour vivre en relation avec lui. Mais le péché nous en a séparés. Par amour, il a envoyé son Fils Jésus-Christ mourir sur la croix et ressusciter, pour que quiconque croit en lui reçoive le pardon et la vie éternelle.</p>
+      <div class="cta-row" style="margin-top:24px;">
+        <a class="btn btn-primary" style="background:var(--night); color:var(--parchment);" href="evangile.html">Découvrir l'Évangile en détail</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="a-venir">
+    <div class="wrap">
+      <p class="eyebrow">Marcher chaque jour</p>
+      <h2 class="section-title">Ce que tu trouveras ici</h2>
+      <p>Le site grandit petit à petit.</p>
+
+      <div class="feature">
+        <span class="tag">Disponible</span>
+        <h3>Un verset, une méditation, une prière</h3>
+        <p>Chaque matin et chaque soir, une notification t'apporte de quoi nourrir ta journée : un verset, une courte méditation, et une prière à faire tienne.</p>
+      </div>
+
+      <div class="feature">
+        <span class="tag">Disponible</span>
+        <h3>Prédications & études bibliques</h3>
+        <p>Une rubrique pour approfondir : prédications et études bibliques, renouvelées matin et soir.</p>
+        <a href="predications.html" style="font-size:14px; color:var(--ember);">Découvrir →</a>
+      </div>
+
+      <div class="feature">
+        <span class="tag">Disponible</span>
+        <h3>Pose ta question</h3>
+        <p>Un espace pour poser tes questions sur la foi et recevoir une réponse fondée uniquement sur la Bible.</p>
+        <a href="questions.html" style="font-size:14px; color:var(--ember);">Poser une question →</a>
+      </div>
+
+      <div class="feature">
+        <span class="tag">Disponible</span>
+        <h3>Jeux bibliques</h3>
+        <p>Un quiz pour redécouvrir les récits et personnages de la Bible, en s'amusant.</p>
+        <a href="jeux.html" style="font-size:14px; color:var(--ember);">Jouer →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="donate-section" id="dons">
+    <div class="wrap">
+      <p class="eyebrow">Soutenir le ministère</p>
+      <h2 class="section-title">Faire un don</h2>
+      <p>MARANATHA GOSPEL avance sans budget, porté uniquement par la foi et le soutien de ceux qui croient en cette mission. Si tu souhaites soutenir le travail, écris-nous : on te communiquera les moyens disponibles.</p>
+      <div class="donate-box">
+        <p>Un mot suffit — dis-nous que tu veux soutenir le ministère et on te répondra avec les détails.</p>
+        <a class="donate-btn" href="mailto:christtonouhope@gmail.com?subject=Je%20souhaite%20faire%20un%20don%20%C3%A0%20MARANATHA%20GOSPEL">Écrire pour faire un don</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing" id="rejoindre">
+    <div class="wrap">
+      <p class="eyebrow" style="color:var(--dawn-soft)">Rejoins-nous</p>
+      <h2>Un groupe de choisis de Dieu, réuni depuis 2024</h2>
+      <p>MARANATHA GOSPEL est porté par une petite communauté de croyants qui veut annoncer l'Évangile et accompagner chacun dans sa marche avec Dieu.</p>
+      <p class="contact-line">Écris-nous : <a href="mailto:christtonouhope@gmail.com">christtonouhope@gmail.com</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">MARANATHA GOSPEL — depuis 2024</div>
+  </footer>
+
+<script>
+  const SERVER_URL = "https://maranatha-gospel-server.onrender.com";
+  const ONESIGNAL_APP_ID = "f05a2eec-de6f-43b7-b247-394de0772c47";
+
+  // Ouvre/ferme le menu
+  const menuBtn = document.getElementById("menu-btn");
+  const navMenu = document.getElementById("nav-menu");
+  menuBtn.addEventListener("click", () => navMenu.classList.toggle("open"));
+  navMenu.querySelectorAll("a").forEach(a =>
+    a.addEventListener("click", () => navMenu.classList.remove("open"))
+  );
+
+  // Charge le verset/méditation/prière du jour
+  fetch(`${SERVER_URL}/api/today`)
+    .then(r => r.json())
+    .then(data => {
+      const el = document.getElementById("today-content");
+      if (data.error) {
+        el.innerHTML = `<p class="today-empty">Le premier verset du jour arrive bientôt.</p>`;
+        return;
+      }
+      el.innerHTML = `
+        <div class="today-card">
+          <p class="moment">${data.moment === "matin" ? "Verset du matin" : "Verset du soir"}</p>
+          <p class="verse">« ${data.verset} »</p>
+          <span class="ref">${data.reference}</span>
+          <h4>Méditation</h4>
+          <p>${data.meditation}</p>
+          <h4>Prière</h4>
+          <p>${data.priere}</p>
+        </div>`;
+    })
+    .catch(() => {
+      document.getElementById("today-content").innerHTML =
+        `<p class="today-empty">Le premier verset du jour arrive bientôt.</p>`;
+    });
+
+  // Active les notifications push via OneSignal
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function (OneSignal) {
+    await OneSignal.init({ appId: ONESIGNAL_APP_ID });
+
+    const btn = document.getElementById("notif-btn");
+
+    // Si déjà abonné, on l'indique tout de suite
+    if (OneSignal.User.PushSubscription.optedIn) {
+      btn.textContent = "Notifications activées ✓";
+      btn.disabled = true;
+    }
+
+    btn.addEventListener("click", async () => {
+      try {
+        await OneSignal.Notifications.requestPermission();
+        btn.textContent = "Notifications activées ✓";
+        btn.disabled = true;
+      } catch (err) {
+        btn.textContent = "Impossible d'activer — réessaie";
+      }
+    });
+  });
+</script>
+</body>
+</html>
